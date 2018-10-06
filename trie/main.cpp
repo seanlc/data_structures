@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <iostream>
 #include "Trie.h"
 
 using namespace std;
@@ -28,10 +29,45 @@ void testGet()
     printf("pos: %d\n", posArr[i]);
 }
 
+void testPreOrder()
+{
+  Trie myT;
+  myT.insert("alligator", 0);
+  myT.insert("almanac", 1);
+  myT.preOrderTrav();
+}
+
+void testAddToLeaves()
+{
+  Trie myT;
+  char x = 'x';
+  myT.insert("salad",0);
+  myT.insert("steak",1);
+  myT.insert("manga",2);  
+  myT.preOrderTrav();
+  myT.addCharToAllLeaves(x);
+  myT.preOrderTrav();
+}
+
+void testHasString()
+{
+  Trie myT;
+  string str = "test";
+  myT.insert("Rocklin", 0);
+  myT.insert("California", 1);
+  myT.insert("Sac", 2);
+
+  cout << "string in tree: " << myT.hasString("Sac") << endl;
+  cout << "string not in tree: " << myT.hasString(str) << endl;
+}
+
 int main()
 {
 //  testConstrDestr();
 //  testInsert();
-  testGet();
+//  testGet();
+//  testPreOrder();
+//  testAddToLeaves();
+  testHasString();
   return 0;
 }

@@ -1,5 +1,6 @@
 #include <string>
 #include <stdint.h>
+#include <stdio.h>
 
 #define ALPHALEN 255
 #define NUMPOS 20
@@ -15,10 +16,8 @@ struct Node
     int numBranches;
 
     Node(char ch)
+    : c(ch), curPos(0), numBranches(0)
     {
-	c = ch;
-        curPos = 0;
-	numBranches = 0;
 	for(int i = 0; i < ALPHALEN; ++i)
 	    branch[i] = nullptr;
     }
@@ -66,7 +65,55 @@ struct Node
     }
 
     // find child of last node with >= 2 branches off and delete
-    int removeBranch(char c);
+    int removeBranch(string s);
+    bool hasBranch(string s)
+    {
+	if (s.length() == 0)
+	  return true;
+	int firstChar = s[0];
+        return branch[firstChar] != nullptr && branch[firstChar]->hasBranch(s.substr(1));
+    }
+    int print()
+    {
+      printf("node char: %c\n", c);
+      return 0;
+    }
+    void addCharToLeaves(char ch, int pos)
+    {
+	  bool hasBranch = false;
+	  for(int i = 0; i < ALPHALEN; ++i)
+	  {
+	    if(branch[i] != nullptr)
+	    {
+	      branch[i]->addCharToLeaves(ch,pos);
+	      hasBranch = true;
+            } 
+	  }
+	  if(!hasBranch)
+          {
+	      string str = "";
+	      str += ch;
+	      addBranch(str, pos);
+	  }
+    }
+    void preOrderTraversal()
+    {
+	  print();
+	  for(int i = 0; i < ALPHALEN; ++i)
+	  {
+	      if(branch[i] != nullptr)
+	        branch[i]->preOrderTraversal();
+	  }
+    }
+    void deleteNodeWithChildren()
+    {
+        for(int i = 0; i < ALPHALEN; ++i)
+	{
+	    if(branch[i] != NULL)
+	      branch[i]->deleteNodeWithChildren();
+	}
+	delete this;
+    }
 };
 
 class Trie
@@ -78,12 +125,16 @@ class Trie
     }
     ~Trie()
     {
-       deleteNode(root); 
+       root->deleteNodeWithChildren();
     }
     int insert(string s, int pos)
     {
        root->addBranch(s, pos); 
        return 0;
+    }
+    bool hasString(string s)
+    {
+        return root->hasBranch(s);
     }
     int remove(string s);
     int getPos(string s, int * pos, int *numPos)
@@ -92,17 +143,17 @@ class Trie
        return 0;
     }
     int findLongestSubstring(string s, string substr, int pos);
-    int addCharToAll(char c);
+    void preOrderTrav()
+    {
+	printf("preOrderTraversal called \n");
+        root->preOrderTraversal();
+    }
+    int addCharToAllLeaves(char c)
+    {
+        root->addCharToLeaves(c, 0);
+	return 0;
+    }
   
   private:
     Node * root;
-    void deleteNode(Node * nd)
-    {
-        for(int i = 0; i < ALPHALEN; ++i)
-	{
-	    if(nd->branch[i] != NULL)
-	      deleteNode(nd->branch[i]);
-	}
-	delete nd;
-    }
 };
