@@ -61,6 +61,27 @@ void testHasString()
   cout << "string not in tree: " << myT.hasString(str) << endl;
 }
 
+void testRemove()
+{
+  Trie myT;
+  myT.insert("steak",0);
+  myT.insert("string", 1);
+  myT.insert("I", 3);
+  myT.preOrderTrav();
+  myT.remove("s");
+  printf("after removing s:\n");
+  myT.preOrderTrav();
+  myT.remove("is");
+  printf("after removing is (dne): \n");
+  myT.preOrderTrav();
+  myT.remove("I");
+  printf("after removing I: \n");
+  myT.preOrderTrav(); 
+  myT.remove("steak");
+  printf("after removing steak: \n");
+  myT.preOrderTrav();
+}
+
 int main()
 {
 //  testConstrDestr();
@@ -68,6 +89,7 @@ int main()
 //  testGet();
 //  testPreOrder();
 //  testAddToLeaves();
-  testHasString();
+//  testHasString();
+  testRemove();
   return 0;
 }

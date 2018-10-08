@@ -9,7 +9,7 @@ using namespace std;
 
 struct Node
 {
-    char c;
+    uint8_t c;
     int pos[NUMPOS];
     int curPos;
     Node * branch[ALPHALEN];
@@ -65,7 +65,33 @@ struct Node
     }
 
     // find child of last node with >= 2 branches off and delete
-    int removeBranch(string s);
+    Node * removeBranch(string str)
+    {
+      Node * last_node = nullptr;
+      if(str.length() > 0)
+      {
+	uint8_t curChar = str[0];
+        Node * targetChild = branch[curChar];
+	if(targetChild != nullptr)
+        {
+          last_node = targetChild->removeBranch(str.substr(1));
+	  if(last_node == nullptr && 
+	     numBranches > 1 && 
+	     !( str.length() == 1 && targetChild->numBranches > 0))
+	  {
+	    last_node = this;
+	  }
+	}
+        if (last_node == this)
+        {
+          uint8_t delete_char = targetChild->c;
+          printf("deleting target child with char %c\n", targetChild->c);
+          targetChild->deleteNodeWithChildren();
+	  branch[delete_char] = nullptr;
+        }
+      }
+      return last_node;
+    }
     bool hasBranch(string s)
     {
 	if (s.length() == 0)
@@ -111,6 +137,7 @@ struct Node
 	{
 	    if(branch[i] != NULL)
 	      branch[i]->deleteNodeWithChildren();
+	    branch[i] = nullptr;
 	}
 	delete this;
     }
@@ -136,7 +163,11 @@ class Trie
     {
         return root->hasBranch(s);
     }
-    int remove(string s);
+    int remove(string s)
+    {
+	root->removeBranch(s);
+	return 0;
+    }
     int getPos(string s, int * pos, int *numPos)
     {
        root->getBranchPos(s,pos,numPos); 
