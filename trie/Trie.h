@@ -10,6 +10,7 @@ using namespace std;
 struct Node
 {
     uint8_t c;
+    // TODO: remove pos array and just store single pos
     int pos[NUMPOS];
     int curPos;
     Node * branch[ALPHALEN];
@@ -22,6 +23,7 @@ struct Node
 	    branch[i] = nullptr;
     }
 
+    // TODO: change to return single pos and use pass by reference
     int getBranchPos(string s, int * pos, int * numPos)
     {
 	uint8_t c = s[0];
@@ -42,7 +44,8 @@ struct Node
 
 	return 0;
     }
-
+    
+    // TODO: assign pos to every node, not just end
     int addBranch(string s, int pos)
     {
       if (s.length() != 0)
@@ -141,6 +144,20 @@ struct Node
 	}
 	delete this;
     }
+    int findSubstring(string str, int &length, int &pos)
+    {
+	if(str.length() > 0)
+	{
+	    uint8_t currentChar = str[0];
+            if(branch[currentChar] != nullptr)
+	    {
+	      ++length;
+              pos = this->pos[0];
+	      branch[currentChar]->findSubstring(str.substr(1), length, pos);
+	    }
+	}
+	return 0;
+    }
 };
 
 class Trie
@@ -168,12 +185,17 @@ class Trie
 	root->removeBranch(s);
 	return 0;
     }
+    // TODO: return single pos instead of multiple
     int getPos(string s, int * pos, int *numPos)
     {
        root->getBranchPos(s,pos,numPos); 
        return 0;
     }
-    int findLongestSubstring(string s, string substr, int pos);
+    int findLongestSubstring(string s, int  &length, int &pos)
+    {
+        root->findSubstring(s, length, pos);
+	return 0;
+    }
     void preOrderTrav()
     {
 	printf("preOrderTraversal called \n");

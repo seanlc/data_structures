@@ -82,6 +82,19 @@ void testRemove()
   myT.preOrderTrav();
 }
 
+void testSubstring()
+{
+  Trie myT;
+  myT.insert("steak", 0);
+  myT.insert("string", 1);
+  myT.insert("I", 2);
+  myT.preOrderTrav();
+  int length = 0;
+  int pos = -1;
+  myT.findLongestSubstring("str", length, pos);
+  printf("found substring of length %d at pos %d\n", length, pos);
+}
+
 int main()
 {
 //  testConstrDestr();
@@ -90,6 +103,7 @@ int main()
 //  testPreOrder();
 //  testAddToLeaves();
 //  testHasString();
-  testRemove();
+//  testRemove();
+  testSubstring();
   return 0;
 }
